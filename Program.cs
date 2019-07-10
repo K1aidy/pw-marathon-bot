@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace pw_marathon_bot
 {
@@ -8,20 +10,16 @@ namespace pw_marathon_bot
 	{
 		public static void Main(string[] args)
 		{
-			CreateWebHostBuilder(args).Build().Run();
-		}
-
-		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-			WebHost.CreateDefaultBuilder(args)
+			var config = new ConfigurationBuilder().AddCommandLine(args).Build();
+			var host = new WebHostBuilder()
+				.UseKestrel()
+				.UseContentRoot(Directory.GetCurrentDirectory())
+				.UseConfiguration(config)
+				.UseIISIntegration()
 				.UseStartup<Startup>()
-				.UseKestrel((context, options) =>
-				{
-					var port = Environment.GetEnvironmentVariable("PORT");
+				.Build();
 
-					if (!string.IsNullOrEmpty(port))
-					{
-						options.ListenAnyIP(int.Parse(port));
-					}
-				});
+			host.Run();
+		}
 	}
 }
