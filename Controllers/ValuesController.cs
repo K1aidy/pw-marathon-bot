@@ -14,7 +14,7 @@ namespace pw_marathon_bot.Controllers
 		[HttpGet]
 		public ActionResult<IEnumerable<string>> Get()
 		{
-			var test = Environment.GetEnvironmentVariable("Telegram");
+			var test = Environment.GetEnvironmentVariable("$DATABASE_URL");
 			return new string[] { "value1", "value3", test };
 		}
 
