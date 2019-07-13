@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Marathon.DataBase;
 using Marathon.DataBase.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +21,7 @@ namespace Marathon.Controllers
 
 		// GET api/values
 		[HttpGet()]
-		public IQueryable<User> Get() =>
-			_context.Users.AsNoTracking().Take(10);
+		public async Task<IEnumerable<User>> Get() =>
+			await _context.Users.AsNoTracking().ToListAsync();
 	}
 }
