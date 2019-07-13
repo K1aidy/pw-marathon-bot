@@ -18,7 +18,7 @@ namespace Marathon.Controllers
 		}
 
 		// GET api/values
-		[HttpGet("users")]
+		[HttpGet()]
 		public IQueryable<User> Get() =>
 			_context.Users.AsNoTracking().Take(10);
 	}
