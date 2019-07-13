@@ -1,8 +1,8 @@
 ﻿using Marathon.Extensions;
+using Marathon.Models;
 using Marathon.Services.Interfaces;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace Marathon.Implements.Services
 {
@@ -20,12 +20,12 @@ namespace Marathon.Implements.Services
 			_client.SetWebhookAsync(hookUrl, maxConnections: 1).ConfigureAwait(false);
 		}
 
-		public async Task ExecuteAsync(Message message)
+		public async Task ExecuteAsync(UpdateModel message)
 		{
-			var chatId = message.Chat.Id;
-			var messageId = message.MessageId;
+			var chatId = message.Message.Chat.Id;
+			var messageId = message.Message.MessageId;
 
-			await _client.SendTextMessageAsync(chatId, message.Text, replyToMessageId: messageId);
+			await _client.SendTextMessageAsync(chatId, message.Message.Text, replyToMessageId: messageId);
 		}
 
 		public async Task SendMessageAsync(long chatId, string message)
