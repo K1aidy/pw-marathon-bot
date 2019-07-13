@@ -18,9 +18,10 @@ namespace Marathon.Controllers
 		}
 
 		[HttpPost("update")]
-		public async Task<OkObjectResult> Update([FromBody]UpdateModel update)
+		public async Task<OkObjectResult> Update([FromBody]object update)
 		{
-			await _botService.ExecuteAsync(update);
+			throw new System.Exception(JsonConvert.SerializeObject(update));
+			await _botService.ExecuteAsync((UpdateModel)update);
 			return new OkObjectResult(update);
 		}
 	}
