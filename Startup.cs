@@ -22,7 +22,7 @@ namespace Marathon
 		public void ConfigureServices(IServiceCollection services)
 		{
 
-#if !DEBUG
+#if DEBUG
 			var connectionString =
 				"Server=ec2-54-246-84-100.eu-west-1.compute.amazonaws.com;" +
 				"Port=5432;" +
