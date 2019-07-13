@@ -16,12 +16,15 @@ namespace Marathon.Controllers
 			_botService = botService ?? throw new System.ArgumentNullException(nameof(botService));
 		}
 
-		[HttpGet("update")]
-		public async Task<OkResult> Update([FromBody]Update update)
+		[HttpPost("update")]
+		public async Task<OkObjectResult> Update([FromBody]object input)
 		{
-			await _botService.ExecuteAsync(update.Message);
+			if (input is Update update)
+			{
+				await _botService.ExecuteAsync(update.Message);
+			}
 
-			return Ok();
+			return new OkObjectResult(input);
 		}
 	}
 }
