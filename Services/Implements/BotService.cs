@@ -16,6 +16,7 @@ namespace Marathon.Implements.Services
 			var hookUrl = EnvironmentExtensions.GetWebHookUrl();
 
 			_client = new TelegramBotClient(token);
+
 			_client.SetWebhookAsync(hookUrl).ConfigureAwait(false);
 		}
 
@@ -25,6 +26,11 @@ namespace Marathon.Implements.Services
 			var messageId = message.MessageId;
 
 			await _client.SendTextMessageAsync(chatId, message.Text, replyToMessageId: messageId);
+		}
+
+		public async Task SendMessageAsync(long chatId, string message)
+		{
+			await _client.SendTextMessageAsync(chatId, message);
 		}
 	}
 }
