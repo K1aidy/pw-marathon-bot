@@ -1,5 +1,6 @@
 ﻿using Marathon.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
@@ -22,9 +23,10 @@ namespace Marathon.Controllers
 			if (input is Update update)
 			{
 				await _botService.ExecuteAsync(update.Message);
+				return new OkObjectResult(update);
 			}
 
-			return new OkObjectResult(input);
+			throw new System.Exception(JsonConvert.SerializeObject(input));
 		}
 	}
 }

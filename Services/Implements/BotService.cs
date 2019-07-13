@@ -17,7 +17,7 @@ namespace Marathon.Implements.Services
 
 			_client = new TelegramBotClient(token);
 
-			_client.SetWebhookAsync(hookUrl).ConfigureAwait(false);
+			_client.SetWebhookAsync(hookUrl, maxConnections: 1).ConfigureAwait(false);
 		}
 
 		public async Task ExecuteAsync(Message message)
