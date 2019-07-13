@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Marathon.DataBase;
 using Marathon.DataBase.Entities;
@@ -36,6 +37,17 @@ namespace Marathon.Controllers
 			await _botService.SendMessageAsync(-328511448, text);
 
 			return await Task.FromResult(EnvironmentExtensions.GetWebHookUrl());
+		}
+
+		[HttpGet("test2")]
+		public async Task<ActionResult<string>> Test2()
+		{
+			using (var client = new HttpClient())
+			{
+				var response = await client.GetAsync($"https://api.telegram.org/bot{EnvironmentExtensions.GetTelegramKey()}/getWebhookInfo");
+				response.EnsureSuccessStatusCode();
+				return await response.Content.ReadAsStringAsync();
+			}
 		}
 	}
 }
