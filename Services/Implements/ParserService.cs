@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using HtmlAgilityPack;
@@ -107,10 +108,12 @@ namespace Marathon.Services.Implements
 
 				client.DefaultRequestHeaders.Add("User-Agent", userAgent);
 
-				var response = await client.GetStringAsync("https://pw.mail.ru:443/supermarathon.php");
+				var response = await client.GetByteArrayAsync("https://pw.mail.ru:443/supermarathon.php");
+
+				var text = Encoding.UTF8.GetString(response);
 
 				var doc = new HtmlDocument();
-				doc.LoadHtml(response);
+				doc.LoadHtml(text);
 				return doc.GetElementbyId("content_body").InnerHtml;
 			}
 		}
