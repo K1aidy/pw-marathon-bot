@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 using System.Text;
 
 namespace Marathon
@@ -21,6 +22,10 @@ namespace Marathon
 		public void ConfigureServices(IServiceCollection services)
 		{
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+			ServicePointManager.SecurityProtocol = 
+				SecurityProtocolType.Tls12
+				| SecurityProtocolType.Tls11
+				| SecurityProtocolType.Tls;
 
 			services
 				.AddDbContext()
