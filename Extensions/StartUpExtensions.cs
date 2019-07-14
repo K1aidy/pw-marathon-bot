@@ -1,5 +1,6 @@
 ﻿using Marathon.DataBase;
 using Marathon.Implements.Services;
+using Marathon.Services.Implements;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +26,9 @@ namespace Marathon.Extensions
 
 		public static IServiceCollection AddTelegramBot(this IServiceCollection services)
 		{
-			return services.AddSingleton<IBotService, BotService>();
+			return services
+				.AddSingleton<IBotService, BotService>()
+				.AddSingleton<IParserService, ParserService>();
 		}
 	}
 }

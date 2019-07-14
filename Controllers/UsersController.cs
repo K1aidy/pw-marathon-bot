@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Marathon.DataBase;
@@ -17,13 +16,16 @@ namespace Marathon.Controllers
 	{
 		private readonly MarathonContext _context;
 		private readonly IBotService _botService;
+		private readonly IParserService _parserService;
 
 		public UsersController(
 			MarathonContext context,
-			IBotService botService)
+			IBotService botService,
+			IParserService parserService)
 		{
 			_context = context ?? throw new System.ArgumentNullException(nameof(context));
 			_botService = botService ?? throw new System.ArgumentNullException(nameof(botService));
+			_parserService = parserService ?? throw new System.ArgumentNullException(nameof(parserService));
 		}
 
 		// GET api/values
@@ -31,12 +33,12 @@ namespace Marathon.Controllers
 		public async Task<IEnumerable<User>> Get() =>
 			await _context.Users.AsNoTracking().ToListAsync();
 
-		[HttpGet("test/{text}")]
-		public async Task<ActionResult<string>> Test([FromRoute]string text)
+		[HttpGet("info/{id}")]
+		public async Task<ActionResult<string>> Test([FromRoute]int id)
 		{
-			await _botService.SendMessageAsync(-328511448, text);
+			var user = await _context.Users.FirstAsync(u => u.Id == id);
 
-			return await Task.FromResult(EnvironmentExtensions.GetWebHookUrl());
+			return await _parserService.GetMarathonInfo(user.Email, user.HashPwd);
 		}
 
 		[HttpGet("test2")]
