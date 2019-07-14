@@ -97,24 +97,29 @@ namespace Marathon.Services.Implements
 		}
 		private async Task<string> GetMaraphonInfo(string mpop)
 		{
-			var userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Downloader/15100 MailRuGameCenter/1510 Safari/537.36";
-
-			using (var handler = new HttpClientHandler())
-			using (var client = new HttpClient(handler))
+			try
 			{
-				handler.CookieContainer.Add(
-					new System.Uri("https://pw.mail.ru:443/supermarathon.php"),
-					new Cookie("Mpop", mpop));
+				using (var handler = new HttpClientHandler())
+				using (var client = new HttpClient(handler))
+				{
+					handler.CookieContainer.Add(
+						new System.Uri("https://pw.mail.ru:443/supermarathon.php"),
+						new Cookie("Mpop", mpop));
 
-				client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+					client.DefaultRequestHeaders.Add("User-Agent", _userAgent);
 
-				var response = await client.GetByteArrayAsync("https://pw.mail.ru:443/supermarathon.php");
+					var response = await client.GetByteArrayAsync("https://pw.mail.ru:443/supermarathon.php");
 
-				var text = Encoding.UTF8.GetString(response);
+					var text = Encoding.UTF8.GetString(response);
 
-				var doc = new HtmlDocument();
-				doc.LoadHtml(text);
-				return doc.GetElementbyId("content_body").InnerHtml;
+					var doc = new HtmlDocument();
+					doc.LoadHtml(text);
+					return doc.GetElementbyId("content_body").InnerHtml;
+				}
+			}
+			catch (System.Exception ex)
+			{
+				return ex.Message;
 			}
 		}
 	}
