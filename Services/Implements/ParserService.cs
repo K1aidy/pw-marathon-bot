@@ -107,13 +107,10 @@ namespace Marathon.Services.Implements
 
 				client.DefaultRequestHeaders.Add("User-Agent", userAgent);
 
-				var response = await client.GetAsync("https://pw.mail.ru:443/supermarathon.php");
+				var response = await client.GetStringAsync("https://pw.mail.ru:443/supermarathon.php");
 
-				response.EnsureSuccessStatusCode();
-
-				var html = await response.Content.ReadAsStringAsync();
 				var doc = new HtmlDocument();
-				doc.LoadHtml(html);
+				doc.LoadHtml(response);
 				return doc.GetElementbyId("content_body").InnerHtml;
 			}
 		}
