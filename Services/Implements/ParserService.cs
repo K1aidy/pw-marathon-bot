@@ -102,12 +102,12 @@ namespace Marathon.Services.Implements
 			using (var client = new HttpClient(handler))
 			{
 				handler.CookieContainer.Add(
-					new System.Uri("https://pw.mail.ru/supermarathon.php"),
+					new System.Uri("https://pw.mail.ru:443/supermarathon.php"),
 					new Cookie("Mpop", mpop));
 
 				client.DefaultRequestHeaders.Add("User-Agent", userAgent);
 
-				var response = await client.GetAsync("https://pw.mail.ru/supermarathon.php");
+				var response = await client.GetAsync("https://pw.mail.ru:443/supermarathon.php");
 
 				response.EnsureSuccessStatusCode();
 
