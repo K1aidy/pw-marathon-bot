@@ -1,13 +1,10 @@
 ﻿using Marathon.DataBase;
-using Marathon.Extensions;
 using Marathon.Models;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Marathon.Implements.Services
@@ -15,35 +12,13 @@ namespace Marathon.Implements.Services
 	public class BotService : IBotService
 	{
 		private readonly TelegramBotClient _client;
-		private readonly IReadOnlyList<UpdateType> updateTypes = new UpdateType[]
-		{
-			UpdateType.CallbackQuery,
-			UpdateType.ChannelPost,
-			UpdateType.ChosenInlineResult,
-			UpdateType.EditedChannelPost,
-			UpdateType.EditedMessage,
-			UpdateType.InlineQuery,
-			UpdateType.Message,
-			UpdateType.Poll,
-			UpdateType.PreCheckoutQuery,
-			UpdateType.ShippingQuery,
-			UpdateType.Unknown
-		};
 		private readonly MarathonContext _context;
 
-		public BotService(MarathonContext context)
+		public BotService(
+			TelegramBotClient client,
+			MarathonContext context)
 		{
-			var token = EnvironmentExtensions.GetTelegramKey();
-			var hookUrl = EnvironmentExtensions.GetWebHookUrl();
-
-			_client = new TelegramBotClient(token);
-
-			_client
-				.SetWebhookAsync(
-					hookUrl,
-					maxConnections: 3,
-					allowedUpdates: updateTypes)
-				.ConfigureAwait(false);
+			_client = client ?? throw new System.ArgumentNullException(nameof(client));
 			_context = context ?? throw new System.ArgumentNullException(nameof(context));
 		}
 

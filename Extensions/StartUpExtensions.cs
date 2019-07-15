@@ -4,6 +4,8 @@ using Marathon.Services.Implements;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace Marathon.Extensions
 {
@@ -26,9 +28,36 @@ namespace Marathon.Extensions
 
 		public static IServiceCollection AddTelegramBot(this IServiceCollection services)
 		{
+			var updateTypes = new UpdateType[]
+			{
+				UpdateType.CallbackQuery,
+				UpdateType.ChannelPost,
+				UpdateType.ChosenInlineResult,
+				UpdateType.EditedChannelPost,
+				UpdateType.EditedMessage,
+				UpdateType.InlineQuery,
+				UpdateType.Message,
+				UpdateType.Poll,
+				UpdateType.PreCheckoutQuery,
+				UpdateType.ShippingQuery,
+				UpdateType.Unknown
+			};
+
+			var token = EnvironmentExtensions.GetTelegramKey();
+			var hookUrl = EnvironmentExtensions.GetWebHookUrl();
+
+			var client = new TelegramBotClient(token);
+
+			client.SetWebhookAsync(
+					hookUrl,
+					maxConnections: 3,
+					allowedUpdates: updateTypes)
+				.ConfigureAwait(false);
+
 			return services
-				.AddSingleton<IBotService, BotService>()
-				.AddSingleton<IParserService, ParserService>();
+				.AddSingleton(client)
+				.AddTransient<IBotService, BotService>()
+				.AddTransient<IParserService, ParserService>();
 		}
 	}
 }
