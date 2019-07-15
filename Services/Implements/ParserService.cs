@@ -20,10 +20,13 @@ namespace Marathon.Services.Implements
 
 		public async Task<string> GetMarathonInfo(string login, string password)
 		{
-			var accessToken = await GetAccessToken(login, password);
+			/*var accessToken = await GetAccessToken(login, password);
 			var location = await GetLocation(accessToken);
 			var mpop = await GetMpop(location);
-			return await GetMaraphonInfo(mpop);
+			return await GetMaraphonInfo(mpop);*/
+
+			var temp = "1563202984:034e42705c7376411905000017031f051c054f6c5150445e05190401041d425043425f49504b445e5e41145a545858194b44:sisunpisunov@mail.ru:";
+			return await GetMaraphonInfo(temp);
 		}
 
 		private async Task<string> GetAccessToken(string login, string password)
