@@ -95,23 +95,28 @@ namespace Marathon.Services.Implements
 		}
 		private async Task<string> GetMaraphonInfo(string mpop)
 		{
-			using (var handler = new HttpClientHandler())
-			using (var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) })
+			using (var handler = new HttpClientHandler()
+			{
+				Proxy = new WebProxy("195.182.135.237:3128", false),
+				PreAuthenticate = true,
+				UseDefaultCredentials = false,
+			})
+			using (var client = new HttpClient(handler))
 			{
 				handler.CookieContainer.Add(
-					new Uri("https://pw.mail.ru"),
+					new Uri("https://pw.mail.ru/supermarathon.php"),
 					new Cookie("Mpop", mpop));
 
 				client.DefaultRequestHeaders.Add("User-Agent", _userAgent);
 
-				var response = await client.GetAsync("https://pw.mail.ru");
+				var response = await client.GetAsync("https://pw.mail.ru/supermarathon.php");
 
 				response.EnsureSuccessStatusCode();
 
 				var html = await response.Content.ReadAsStringAsync();
 				var doc = new HtmlDocument();
 				doc.LoadHtml(html);
-				return doc.GetElementbyId("forum_table"/*"content_body"*/).InnerHtml;
+				return doc.GetElementbyId("content_body").InnerHtml;
 			}
 		}
 	}
