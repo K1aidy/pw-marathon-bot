@@ -23,5 +23,12 @@ namespace Marathon.Controllers
 			await _botService.ExecuteAsync(update);
 			return new OkObjectResult(update);
 		}
+
+		[HttpPost("update2")]
+		public Task<OkObjectResult> Update2([FromBody]object update)
+		{
+			// для дебага
+			throw new System.Exception(JsonConvert.SerializeObject(update));
+		}
 	}
 }
