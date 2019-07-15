@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using HtmlAgilityPack;
@@ -20,13 +23,10 @@ namespace Marathon.Services.Implements
 
 		public async Task<string> GetMarathonInfo(string login, string password)
 		{
-			/*var accessToken = await GetAccessToken(login, password);
+			var accessToken = await GetAccessToken(login, password);
 			var location = await GetLocation(accessToken);
 			var mpop = await GetMpop(location);
-			return await GetMaraphonInfo(mpop);*/
-
-			var temp = "1563202984:034e42705c7376411905000017031f051c054f6c5150445e05190401041d425043425f49504b445e5e41145a545858194b44:sisunpisunov@mail.ru:";
-			return await GetMaraphonInfo(temp);
+			return await GetMaraphonInfo(mpop);
 		}
 
 		private async Task<string> GetAccessToken(string login, string password)
@@ -96,22 +96,22 @@ namespace Marathon.Services.Implements
 		private async Task<string> GetMaraphonInfo(string mpop)
 		{
 			using (var handler = new HttpClientHandler())
-			using (var client = new HttpClient(handler) { MaxResponseContentBufferSize  = 100000})
+			using (var client = new HttpClient(handler))
 			{
 				handler.CookieContainer.Add(
-				new System.Uri("https://pw.mail.ru/supermarathon.php"),
-				new Cookie("Mpop", mpop));
+					new Uri("https://pw.mail.ru"),
+					new Cookie("Mpop", mpop));
 
 				client.DefaultRequestHeaders.Add("User-Agent", _userAgent);
 
-				var response = await client.GetAsync("https://pw.mail.ru/supermarathon.php");
+				var response = await client.GetAsync("https://pw.mail.ru");
 
 				response.EnsureSuccessStatusCode();
 
 				var html = await response.Content.ReadAsStringAsync();
 				var doc = new HtmlDocument();
 				doc.LoadHtml(html);
-				return doc.GetElementbyId("content_body").InnerHtml;
+				return doc.GetElementbyId("forum_table"/*"content_body"*/).InnerHtml;
 			}
 		}
 	}
