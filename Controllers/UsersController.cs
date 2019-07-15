@@ -16,16 +16,13 @@ namespace Marathon.Controllers
 	public class UsersController : ControllerBase
 	{
 		private readonly MarathonContext _context;
-		private readonly IBotService _botService;
 		private readonly IParserService _parserService;
 
 		public UsersController(
 			MarathonContext context,
-			IBotService botService,
 			IParserService parserService)
 		{
 			_context = context ?? throw new System.ArgumentNullException(nameof(context));
-			_botService = botService ?? throw new System.ArgumentNullException(nameof(botService));
 			_parserService = parserService ?? throw new System.ArgumentNullException(nameof(parserService));
 		}
 
