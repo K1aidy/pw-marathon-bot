@@ -96,7 +96,7 @@ namespace Marathon.Services.Implements
 		private async Task<string> GetMaraphonInfo(string mpop)
 		{
 			using (var handler = new HttpClientHandler())
-			using (var client = new HttpClient(handler))
+			using (var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) })
 			{
 				handler.CookieContainer.Add(
 					new Uri("https://pw.mail.ru"),
