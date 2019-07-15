@@ -92,8 +92,8 @@ namespace Marathon.Services.Implements
 		}
 		private async Task<string> GetMaraphonInfo(string mpop)
 		{
-			using (var handler = new HttpClientHandler { MaxRequestContentBufferSize = 100000 })
-			using (var client = new HttpClient(handler))
+			using (var handler = new HttpClientHandler())
+			using (var client = new HttpClient(handler) { MaxResponseContentBufferSize  = 100000})
 			{
 				handler.CookieContainer.Add(
 				new System.Uri("https://pw.mail.ru/supermarathon.php"),
