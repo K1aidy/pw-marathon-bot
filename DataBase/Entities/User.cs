@@ -15,5 +15,8 @@ namespace Marathon.DataBase.Entities
 
 		[Column("hashpwd")]
 		public string HashPwd { get; set; }
+
+		[Column("description")]
+		public string Description { get; set; }
 	}
 }

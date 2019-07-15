@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,8 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using HtmlAgilityPack;
+using Marathon.Extensions;
 using Marathon.Models.Mail;
 using Marathon.Services.Interfaces;
+using Newtonsoft.Json;
 
 namespace Marathon.Services.Implements
 {
@@ -26,7 +29,8 @@ namespace Marathon.Services.Implements
 			var accessToken = await GetAccessToken(login, password);
 			var location = await GetLocation(accessToken);
 			var mpop = await GetMpop(location);
-			return await GetMaraphonInfo(mpop);
+			var html = await GetMaraphonInfo(mpop);
+			return ParseHtml(html);
 		}
 
 		private async Task<string> GetAccessToken(string login, string password)
@@ -37,7 +41,7 @@ namespace Marathon.Services.Implements
 				dict.Add("client_id", "gamecenter.mail.ru");
 				dict.Add("grant_type", "password");
 				dict.Add("username", login);
-				dict.Add("password", password);
+				dict.Add("password", password.Decrypt(EnvironmentExtensions.GetSecret()));
 
 				var content = new FormUrlEncodedContent(dict);
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
@@ -97,7 +101,7 @@ namespace Marathon.Services.Implements
 		{
 			using (var handler = new HttpClientHandler()
 			{
-				Proxy = new WebProxy("195.182.135.237:3128", false),
+				Proxy = new WebProxy(EnvironmentExtensions.GetProxy(), false),
 				PreAuthenticate = true,
 				UseDefaultCredentials = false,
 			})
@@ -113,11 +117,28 @@ namespace Marathon.Services.Implements
 
 				response.EnsureSuccessStatusCode();
 
-				var html = await response.Content.ReadAsStringAsync();
-				var doc = new HtmlDocument();
-				doc.LoadHtml(html);
-				return doc.GetElementbyId("content_body").InnerHtml;
+				return await response.Content.ReadAsStringAsync();
 			}
+		}
+
+		private string ParseHtml(string html)
+		{
+			var doc = new HtmlDocument();
+			doc.LoadHtml(html);
+
+			var titles = doc.DocumentNode
+				.SelectNodes("//div[@class='info']")
+				.Select(n => n.ChildNodes.First(cn => cn.OriginalName.Equals("b")).InnerText)
+				.ToList();
+
+			var progresses = doc.DocumentNode
+				.SelectNodes("//div[@class='progress']")
+				.Select(d => d.InnerText)
+				.ToList();
+
+			var result = titles.Zip(progresses, (title, progress) => new { title, progress });
+
+			return JsonConvert.SerializeObject(result);
 		}
 	}
 }

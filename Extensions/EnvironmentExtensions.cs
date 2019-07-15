@@ -15,5 +15,13 @@ namespace Marathon.Extensions
 		public static string GetTelegramKey() =>
 			Environment.GetEnvironmentVariable("TelegramKey")
 				?? throw new ApplicationException("Не найдена переменная среды TelegramKey");
+
+		public static string GetProxy() =>
+			Environment.GetEnvironmentVariable("Proxy")
+				?? throw new ApplicationException("Не найдена переменная среды Proxy");
+		public static string GetSecret() =>
+			Environment.GetEnvironmentVariable("Secret")
+				?? throw new ApplicationException("Не найдена переменная среды Secret");
+
 	}
 }

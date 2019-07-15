@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Marathon.DataBase;
@@ -28,15 +29,34 @@ namespace Marathon.Controllers
 			_parserService = parserService ?? throw new System.ArgumentNullException(nameof(parserService));
 		}
 
-		// GET api/values
 		[HttpGet()]
 		public async Task<IEnumerable<User>> Get() =>
 			await _context.Users.AsNoTracking().ToListAsync();
 
-		[HttpGet("info/{id}")]
-		public async Task<ActionResult<string>> Test([FromRoute]int id)
+		[HttpGet("add")]
+		public async Task<bool> AddUser(
+			[FromQuery]string login,
+			[FromQuery]string password,
+			[FromQuery]string description)
 		{
-			var user = await _context.Users.FirstAsync(u => u.Id == id);
+			var newUser = new User
+			{
+				Email = login,
+				HashPwd = password.Encrypt(EnvironmentExtensions.GetSecret()),
+				Description = description
+			};
+
+			await _context.Users.AddAsync(newUser);
+
+			var isAdded = await _context.SaveChangesAsync();
+
+			return isAdded > 0;
+		}
+
+		[HttpGet("info/{name}")]
+		public async Task<ActionResult<string>> Test([FromRoute]string name)
+		{
+			var user = await _context.Users.FirstAsync(u => u.Description == name);
 
 			return await _parserService.GetMarathonInfo(user.Email, user.HashPwd);
 		}
