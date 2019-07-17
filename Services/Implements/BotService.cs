@@ -2,6 +2,7 @@
 using Marathon.Models;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -78,15 +79,12 @@ namespace Marathon.Implements.Services
 
 		private async Task ExecuteCallback(UpdateModel message)
 		{
+			throw new System.Exception(JsonConvert.SerializeObject(message));
 			var from = message.CallBack.From.LastName;
-			var sender = message.CallBack.Message.ReplyToMessage.From.LastName;
 
 			var chatFrom = message.CallBack.Message.Chat.Id;
-			var chatSender = message.CallBack.Message.ReplyToMessage.Chat.Id;
 
-			if (message.CallBack.Message.ReplyToMessage.Text.Equals("/accounts")
-				&& from.Equals(sender)
-				&& chatFrom == chatSender)
+			if (message.CallBack.Message.ReplyToMessage.Text.Equals("/accounts"))
 			{
 				var name = message.CallBack.Data;
 				var user = await _context.Users.FirstAsync(u => u.Description == name);
