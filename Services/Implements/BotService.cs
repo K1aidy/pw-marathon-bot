@@ -2,7 +2,6 @@
 using Marathon.Models;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -13,6 +12,8 @@ namespace Marathon.Implements.Services
 {
 	public class BotService : IBotService
 	{
+		private const string ACCOUNTS = "/accounts";
+
 		private readonly IParserService _parserService;
 		private readonly TelegramBotClient _client;
 		private readonly MarathonContext _context;
@@ -51,7 +52,9 @@ namespace Marathon.Implements.Services
 			var keyBoard = new InlineKeyboardMarkup(users
 				.Select(u => new InlineKeyboardButton[]
 				{
-					InlineKeyboardButton.WithCallbackData(u.Description)
+					InlineKeyboardButton.WithCallbackData(
+						u.Description,
+						$"/accounts###{u.Description}")
 				}));
 
 			await _client.SendTextMessageAsync(
@@ -65,28 +68,22 @@ namespace Marathon.Implements.Services
 			var chatId = message.Message.Chat.Id;
 			var messageId = message.Message.MessageId;
 
-			if (message.Message.Text.Equals("/accounts")
+			if (message.Message.Text.Equals(ACCOUNTS)
 				&& message.Message.From.LastName.StartsWith("Многолетов"))
 			{
 				await GetAccountsListAsync(chatId, messageId);
 			}
-
-			await _client.SendTextMessageAsync(
-				chatId,
-				message.Message.Text,
-				replyToMessageId: messageId);
 		}
 
 		private async Task ExecuteCallback(UpdateModel message)
 		{
-			throw new System.Exception(JsonConvert.SerializeObject(message));
 			var from = message.CallBack.From.LastName;
 
 			var chatFrom = message.CallBack.Message.Chat.Id;
 
-			if (message.CallBack.Message.ReplyToMessage.Text.Equals("/accounts"))
+			if (message.CallBack.Data.StartsWith(ACCOUNTS))
 			{
-				var name = message.CallBack.Data;
+				var name = message.CallBack.Data.Split("###").Last();
 				var user = await _context.Users.FirstAsync(u => u.Description == name);
 				var answer = await _parserService.GetMarathonInfo(user.Email, user.HashPwd);
 
