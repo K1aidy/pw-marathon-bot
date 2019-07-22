@@ -86,7 +86,8 @@ namespace Marathon.Implements.Services
 				var keyBoard = await GenerateAccountsList();
 
 				await _client.EditMessageTextAsync(
-					message.CallBack.Message.MessageId.ToString(),
+					new Telegram.Bot.Types.ChatId(chatFrom),
+					message.CallBack.Message.MessageId,
 					answer,
 					replyMarkup: keyBoard);
 			}
