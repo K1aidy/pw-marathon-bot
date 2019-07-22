@@ -136,9 +136,23 @@ namespace Marathon.Services.Implements
 				.Select(d => d.InnerText)
 				.ToList();
 
-			var result = titles.Zip(progresses, (title, progress) => new { title, progress });
+			var result = titles.Zip(progresses, (title, progress) =>
+				new MarathonResult
+				{
+					Title = title,
+					Result = progress
+				});
 
-			return JsonConvert.SerializeObject(result);
+			var stringBuilder = new StringBuilder()
+				.AppendLine("|Квест|Выполнено|")
+				.AppendLine("|---|---|");
+
+			foreach (var item in result)
+			{
+				stringBuilder.AppendLine($"|{item.Title}|{item.Result}|");
+			}
+
+			return stringBuilder.ToString();
 		}
 	}
 }

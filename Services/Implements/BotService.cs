@@ -89,7 +89,8 @@ namespace Marathon.Implements.Services
 					new Telegram.Bot.Types.ChatId(chatFrom),
 					message.CallBack.Message.MessageId,
 					answer,
-					replyMarkup: keyBoard);
+					replyMarkup: keyBoard,
+					parseMode: ParseMode.Markdown);
 			}
 		}
 
