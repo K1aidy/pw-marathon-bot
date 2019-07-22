@@ -144,12 +144,12 @@ namespace Marathon.Services.Implements
 				});
 
 			var stringBuilder = new StringBuilder()
-				.AppendLine("|Квест|Выполнено|")
-				.AppendLine("|---|---|");
+				.AppendLine("Квест | Выполнено")
+				.AppendLine("--- | ---");
 
 			foreach (var item in result)
 			{
-				stringBuilder.AppendLine($"|{item.Title}|{item.Result}|");
+				stringBuilder.AppendLine($"{item.Title} | {item.Result}");
 			}
 
 			return stringBuilder.ToString();
