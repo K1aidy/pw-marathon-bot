@@ -143,16 +143,20 @@ namespace Marathon.Services.Implements
 					Result = progress
 				});
 
-			var stringBuilder = new StringBuilder()
-				.AppendLine("Квест | Выполнено")
-				.AppendLine("--- | ---");
+			var body = string.Concat(result.Select(r =>
+				$"<tr><td>{r.Title}</td><td>{r.Result}</td></tr>"));
 
-			foreach (var item in result)
-			{
-				stringBuilder.AppendLine($"{item.Title} | {item.Result}");
-			}
+			var table = 
+				"<table>" +
+					"<thead>" +
+						"<tr><th>Квест</th><th>Выполнено</th></tr>" +
+					"</thead>" +
+					"<tbody>" +
+					body +
+					"</tbody>" +
+				"</table>";
 
-			return stringBuilder.ToString();
+			return table;
 		}
 	}
 }

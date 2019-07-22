@@ -90,7 +90,7 @@ namespace Marathon.Implements.Services
 					message.CallBack.Message.MessageId,
 					answer,
 					replyMarkup: keyBoard,
-					parseMode: ParseMode.Markdown);
+					parseMode: ParseMode.Html);
 			}
 		}
 
