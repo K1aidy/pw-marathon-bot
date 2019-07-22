@@ -86,7 +86,7 @@ namespace Marathon.Implements.Services
 				var keyBoard = await GenerateAccountsList();
 
 				await _client.EditMessageTextAsync(
-					message.Message.MessageId.ToString(),
+					message.CallBack.Message.MessageId.ToString(),
 					answer,
 					replyMarkup: keyBoard);
 			}
