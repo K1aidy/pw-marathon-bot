@@ -1,4 +1,5 @@
 ﻿using Marathon.DataBase;
+using Marathon.Extensions;
 using Marathon.Models;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace Marathon.Implements.Services
 	public class BotService : IBotService
 	{
 		private const string ACCOUNTS = "/accounts";
+		private const string SEPARATOR = "###";
 
 		private readonly IParserService _parserService;
 		private readonly TelegramBotClient _client;
@@ -49,13 +51,7 @@ namespace Marathon.Implements.Services
 		{
 			var users = await _context.Users.AsNoTracking().ToListAsync();
 
-			var keyBoard = new InlineKeyboardMarkup(users
-				.Select(u => new InlineKeyboardButton[]
-				{
-					InlineKeyboardButton.WithCallbackData(
-						u.Description,
-						$"/accounts###{u.Description}")
-				}));
+			var keyBoard = await GenerateAccountsList();
 
 			await _client.SendTextMessageAsync(
 				chatId,
@@ -83,12 +79,30 @@ namespace Marathon.Implements.Services
 
 			if (message.CallBack.Data.StartsWith(ACCOUNTS))
 			{
-				var name = message.CallBack.Data.Split("###").Last();
+				var name = message.CallBack.Data.Split(SEPARATOR).Last();
 				var user = await _context.Users.FirstAsync(u => u.Description == name);
 				var answer = await _parserService.GetMarathonInfo(user.Email, user.HashPwd);
 
-				await _client.SendTextMessageAsync(chatFrom, answer);
+				var keyBoard = await GenerateAccountsList();
+
+				await _client.EditMessageTextAsync(
+					message.Message.MessageId.ToString(),
+					answer,
+					replyMarkup: keyBoard);
 			}
+		}
+
+		private async Task<InlineKeyboardMarkup> GenerateAccountsList()
+		{
+			var users = await _context.Users.AsNoTracking().ToListAsync();
+
+			return new InlineKeyboardMarkup(users
+				.Select(u => new InlineKeyboardButton[]
+				{
+					InlineKeyboardButton.WithCallbackData(
+						u.Description,
+						$"{ACCOUNTS}{SEPARATOR}{u.Description}")
+				}));
 		}
 	}
 }
