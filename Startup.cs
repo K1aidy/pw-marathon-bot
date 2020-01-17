@@ -22,13 +22,14 @@ namespace Marathon
 		public void ConfigureServices(IServiceCollection services)
 		{
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-			ServicePointManager.SecurityProtocol = 
+			/*ServicePointManager.SecurityProtocol = 
 				SecurityProtocolType.Tls12
 				| SecurityProtocolType.Tls11
-				| SecurityProtocolType.Tls;
+				| SecurityProtocolType.Tls;*/
 
 			services
 				.AddDbContext()
+				.AddServices()
 				.AddTelegramBot()
 				.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}

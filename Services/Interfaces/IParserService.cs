@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Marathon.DataBase.Entities;
+using System.Threading.Tasks;
 
 namespace Marathon.Services.Interfaces
 {
 	public interface IParserService
 	{
-		Task<string> GetMarathonInfo(string login, string password);
+		Task<string> GetMarathonInfo(Account account);
 	}
 }

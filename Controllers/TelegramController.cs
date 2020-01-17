@@ -1,7 +1,6 @@
 ﻿using Marathon.Models;
 using Marathon.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace Marathon.Controllers
@@ -24,11 +23,7 @@ namespace Marathon.Controllers
 			return new OkObjectResult(update);
 		}
 
-		[HttpPost("update2")]
-		public Task<OkObjectResult> Update2([FromBody]object update)
-		{
-			// для дебага
-			throw new System.Exception(JsonConvert.SerializeObject(update));
-		}
+		[HttpGet("healthcheck")]
+		public OkResult Startup() => Ok();
 	}
 }

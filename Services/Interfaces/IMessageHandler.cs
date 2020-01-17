@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Marathon.Services.Interfaces
 {
-	public interface IBotService
+	public interface IMessageHandler
 	{
-		Task ExecuteAsync(UpdateModel message);
+		Task ExecuteMessage(UpdateModel message);
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using Marathon.DataBase;
 using Marathon.Implements.Services;
+using Marathon.Repositories.Implements;
+using Marathon.Repositories.Interfaces;
 using Marathon.Services.Implements;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -55,9 +57,19 @@ namespace Marathon.Extensions
 				.ConfigureAwait(false);
 
 			return services
-				.AddSingleton(client)
-				.AddTransient<IBotService, BotService>()
-				.AddTransient<IParserService, ParserService>();
+				.AddSingleton(client);
 		}
+		public static IServiceCollection AddServices(this IServiceCollection services)
+		{
+			return services
+				.AddTransient<IBotService, BotService>()
+				.AddTransient<IAuthService, AuthService>()
+				.AddTransient<IParserService, ParserService>()
+				.AddTransient<IMessageHandler, MessageHandler>()
+				.AddTransient<ICallbackHandler, CallbackHandler>()
+				.AddTransient<IMarathonRepository, MarathonRepository>()
+				.AddTransient<IAccountRepository, AccountRepository>();
+		}
+
 	}
 }

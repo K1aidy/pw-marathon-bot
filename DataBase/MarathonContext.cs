@@ -9,6 +9,12 @@ namespace Marathon.DataBase
 			: base(options)
 		{ }
 
-		public DbSet<User> Users { get; set; }
+		public virtual DbSet<User> Users { get; set; }
+
+		public virtual DbSet<Result> Results { get; set; }
+
+		public virtual DbSet<Account> Accounts { get; set; }
+
+		public virtual DbSet<Request> Requests { get; set; }
 	}
 }

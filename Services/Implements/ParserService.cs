@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,10 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using HtmlAgilityPack;
+using Marathon.DataBase.Entities;
 using Marathon.Extensions;
 using Marathon.Models.Mail;
 using Marathon.Services.Interfaces;
-using Newtonsoft.Json;
 
 namespace Marathon.Services.Implements
 {
@@ -24,13 +23,20 @@ namespace Marathon.Services.Implements
 			"Chrome/70.0.3538.77 Downloader/15100 " +
 			"MailRuGameCenter/1510 Safari/537.36";
 
-		public async Task<string> GetMarathonInfo(string login, string password)
+		public async Task<string> GetMarathonInfo(Account account)
 		{
-			var accessToken = await GetAccessToken(login, password);
+			var accessToken = await RefreshTokenAsync(account.RefreshToken);
+
+			//var accessToken = await GetAccessToken(login, password);
 			var location = await GetLocation(accessToken);
 			var mpop = await GetMpop(location);
 			var html = await GetMaraphonInfo(mpop);
 			return ParseHtml(html);
+		}
+
+		private async Task<string> RefreshTokenAsync(string refreshToken)
+		{
+			throw new NotImplementedException();
 		}
 
 		private async Task<string> GetAccessToken(string login, string password)
@@ -101,7 +107,7 @@ namespace Marathon.Services.Implements
 		{
 			using (var handler = new HttpClientHandler()
 			{
-				Proxy = new WebProxy(EnvironmentExtensions.GetProxy(), false),
+				/*Proxy = new WebProxy(EnvironmentExtensions.GetProxy(), false),*/
 				PreAuthenticate = true,
 				UseDefaultCredentials = false,
 			})
@@ -143,13 +149,11 @@ namespace Marathon.Services.Implements
 					Result = progress
 				});
 
-			var stringBuilder = new StringBuilder()
-				.Append("Квест | Выполнено  ")
-				.Append("--- | ---  ");
+			var stringBuilder = new StringBuilder();
 
 			foreach (var item in result)
 			{
-				stringBuilder.Append($"{item.Title} | {item.Result}  ");
+				stringBuilder.AppendLine($"{item.Title} - {item.Result}");
 			}
 
 			return stringBuilder.ToString();
