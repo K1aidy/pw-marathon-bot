@@ -19,9 +19,23 @@ namespace Marathon.Extensions
 		public static string GetProxy() =>
 			Environment.GetEnvironmentVariable("Proxy")
 				?? throw new ApplicationException("Не найдена переменная среды Proxy");
+
 		public static string GetSecret() =>
 			Environment.GetEnvironmentVariable("Secret")
 				?? throw new ApplicationException("Не найдена переменная среды Secret");
 
+		public static string GetSocks5Host() => Environment.GetEnvironmentVariable("Socks5Host");
+
+		public static int GetSocks5Port()
+		{
+			var portStr = Environment.GetEnvironmentVariable("Socks5Port");
+
+			if (!int.TryParse(portStr, out var port))
+			{
+				return default;
+			}
+
+			return port;
+		}
 	}
 }

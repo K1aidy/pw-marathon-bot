@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Marathon.Services.Implements
@@ -30,15 +30,15 @@ namespace Marathon.Services.Implements
 			_context = context ?? throw new System.ArgumentNullException(nameof(context));
 		}
 
-		public async Task ExecuteCallback(UpdateModel message)
+		public async Task ExecuteCallback(Update message)
 		{
-			var from = message.CallBack.From.LastName;
+			var from = message.CallbackQuery.From.LastName;
 
-			var chatFrom = message.CallBack.Message.Chat.Id;
+			var chatFrom = message.CallbackQuery.Message.Chat.Id;
 
-			if (message.CallBack.Data.StartsWith(Constants.ACCOUNTS))
+			if (message.CallbackQuery.Data.StartsWith(Constants.ACCOUNTS))
 			{
-				var name = message.CallBack.Data.Split(Constants.SEPARATOR).Last();
+				var name = message.CallbackQuery.Data.Split(Constants.SEPARATOR).Last();
 
 				var account = await _accountRepository.GetAccountAsync(name);
 
@@ -47,8 +47,8 @@ namespace Marathon.Services.Implements
 				var keyBoard = await GenerateAccountsList();
 
 				await _client.EditMessageTextAsync(
-					new Telegram.Bot.Types.ChatId(chatFrom),
-					message.CallBack.Message.MessageId,
+					new ChatId(chatFrom),
+					message.CallbackQuery.Message.MessageId,
 					answer,
 					replyMarkup: keyBoard);
 			}

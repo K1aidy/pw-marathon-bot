@@ -1,6 +1,6 @@
-﻿using Marathon.Models;
-using Marathon.Services.Interfaces;
+﻿using Marathon.Services.Interfaces;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace Marathon.Implements.Services
@@ -18,7 +18,7 @@ namespace Marathon.Implements.Services
 			_callbackHandler = callbackHandler ?? throw new System.ArgumentNullException(nameof(callbackHandler));
 		}
 
-		public async Task ExecuteAsync(UpdateModel message)
+		public async Task ExecuteAsync(Update message)
 		{
 			if (message.Type == UpdateType.Message)
 			{

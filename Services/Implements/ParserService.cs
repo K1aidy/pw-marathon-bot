@@ -17,7 +17,7 @@ namespace Marathon.Services.Implements
 {
 	public class ParserService : IParserService
 	{
-		private readonly string _userAgent = 
+		private readonly string _userAgent =
 			"Mozilla/5.0 (Windows NT 10.0; WOW64) " +
 			"AppleWebKit/537.36 (KHTML, like Gecko) " +
 			"Chrome/70.0.3538.77 Downloader/15100 " +

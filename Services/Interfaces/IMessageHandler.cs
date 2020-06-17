@@ -1,10 +1,10 @@
-﻿using Marathon.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace Marathon.Services.Interfaces
 {
 	public interface IMessageHandler
 	{
-		Task ExecuteMessage(UpdateModel message);
+		Task ExecuteMessage(Update message);
 	}
 }

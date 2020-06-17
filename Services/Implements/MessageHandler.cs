@@ -5,6 +5,7 @@ using Marathon.Models;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Marathon.Services.Implements
@@ -22,7 +23,7 @@ namespace Marathon.Services.Implements
 			_client = client ?? throw new System.ArgumentNullException(nameof(client));
 		}
 
-		public async Task ExecuteMessage(UpdateModel message)
+		public async Task ExecuteMessage(Update message)
 		{
 			var chatId = message.Message.Chat.Id;
 			var messageId = message.Message.MessageId;

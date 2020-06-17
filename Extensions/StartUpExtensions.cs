@@ -6,6 +6,7 @@ using Marathon.Services.Implements;
 using Marathon.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MihaZupan;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -47,18 +48,21 @@ namespace Marathon.Extensions
 
 			var token = EnvironmentExtensions.GetTelegramKey();
 			var hookUrl = EnvironmentExtensions.GetWebHookUrl();
+			var socks5Host = EnvironmentExtensions.GetSocks5Host();
+			var socks5Port = EnvironmentExtensions.GetSocks5Port();
 
-			var client = new TelegramBotClient(token);
+			var client = string.IsNullOrEmpty(socks5Host)
+				? new TelegramBotClient(token)
+				: new TelegramBotClient(
+					token,
+					new HttpToSocks5Proxy(socks5Host, socks5Port));
 
-			client.SetWebhookAsync(
-					hookUrl,
-					maxConnections: 3,
-					allowedUpdates: updateTypes)
-				.ConfigureAwait(false);
+			client.SetWebhookAsync(hookUrl, maxConnections: 3).ConfigureAwait(false);
 
 			return services
 				.AddSingleton(client);
 		}
+
 		public static IServiceCollection AddServices(this IServiceCollection services)
 		{
 			return services

@@ -1,7 +1,7 @@
-﻿using Marathon.Models;
-using Marathon.Services.Interfaces;
+﻿using Marathon.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace Marathon.Controllers
 {
@@ -17,7 +17,7 @@ namespace Marathon.Controllers
 		}
 
 		[HttpPost("update")]
-		public async Task<OkObjectResult> Update([FromBody]UpdateModel update)
+		public async Task<OkObjectResult> Update([FromBody]Update update)
 		{
 			await _botService.ExecuteAsync(update);
 			return new OkObjectResult(update);
