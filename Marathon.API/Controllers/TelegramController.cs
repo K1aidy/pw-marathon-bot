@@ -17,13 +17,13 @@ namespace Marathon.Controllers
 		}
 
 		[HttpPost("update")]
-		public async Task<OkObjectResult> Update([FromBody]Update update)
+		public async Task<IActionResult> Update([FromBody]Update update)
 		{
 			await _botService.ExecuteAsync(update);
-			return new OkObjectResult(update);
+			return Ok(update);
 		}
 
 		[HttpGet("healthcheck")]
-		public OkResult Startup() => Ok();
+		public IActionResult Startup() => Ok("Ok!");
 	}
 }
